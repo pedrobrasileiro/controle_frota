@@ -9,7 +9,7 @@ Permite cadastrar automóveis e motoristas, gerenciar utilizações e garantir q
 
 | Tecnologia   | Versão         |
 | ------------ | -------------- |
-| Node.js      | 22.13.0 (asdf) |
+| Node.js      | 22.13.0         |
 | TypeScript   | 5+             |
 | Express.js   | 4              |
 | Jest         | 29             |
@@ -18,11 +18,18 @@ Permite cadastrar automóveis e motoristas, gerenciar utilizações e garantir q
 
 ## Pré-requisitos
 
-- [asdf](https://asdf-vm.com) com plugin `nodejs`
+- **Node.js 22.13.0** — versão exata exigida (gerenciada via `.nvmrc` ou `.tool-versions`)
+
+> A aplicação foi desenvolvida com `asdf` mas funciona com qualquer gerenciador de versão (nvm, fnm, n) ou Node.js instalado diretamente. Em **produção**, use o Docker (veja seção abaixo).
 
 ```bash
+# asdf
 asdf plugin add nodejs
 asdf install
+
+# alternativa com nvm
+nvm install 22.13.0
+nvm use
 ```
 
 ## Setup
@@ -47,16 +54,16 @@ cp .env.example .env
 | `JWT_EXPIRATION` | `1h`                              | Expiração do token |
 | `PORTA`          | `3000`                            | Porta HTTP         |
 
-## Executar
+## Executar (desenvolvimento)
 
 ```bash
-# Desenvolvimento (com hot reload via ts-node-dev)
+# Hot reload via ts-node-dev
 npm run dev
 
 # Build
 npm run build
 
-# Produção
+# Produção (Node direto após build)
 npm start
 ```
 
@@ -153,6 +160,49 @@ docs/
 ```
 
 Cada feature segue Clean Architecture com `domain/` (entity, usecases, repository), `infra/` (datasource, repository) e `presentation/` (controller, rotas).
+
+## Deploy com Podman / Docker
+
+### Build da imagem
+
+```bash
+podman build -t controle-frotas .
+```
+
+### Executar o container
+
+```bash
+podman run -d \
+  --name controle-frotas \
+  -p 3000:3000 \
+  -e AUTH_USER=admin \
+  -e AUTH_PASSWORD=admin123 \
+  -e JWT_SECRET=segredo-super-seguro \
+  controle-frotas
+```
+
+A API estará disponível em `http://localhost:3000`.
+
+### Health check
+
+O container expõe `GET /api/health` para monitoramento externo:
+
+```bash
+curl http://localhost:3000/api/health
+# → {"status":"ok","timestamp":"2026-06-23T12:00:00.000Z"}
+```
+
+### Variáveis de ambiente
+
+| Variável         | Obrigatória | Padrão    | Descrição                    |
+| ---------------- | ----------- | --------- | ---------------------------- |
+| `AUTH_USER`      | Sim         | `admin`   | Login da autenticação        |
+| `AUTH_PASSWORD`  | Sim         | `admin123`| Senha (mín. 6 caracteres)    |
+| `JWT_SECRET`     | Sim         | —         | Chave HMAC para assinar JWT  |
+| `JWT_EXPIRATION` | Não         | `1h`      | Expiração do token           |
+| `PORTA`          | Não         | `3000`    | Porta HTTP                   |
+
+> **Segurança:** em produção, sempre forneça `JWT_SECRET` com um valor forte e único. Não use os valores padrão.
 
 ## Documentação da API
 
