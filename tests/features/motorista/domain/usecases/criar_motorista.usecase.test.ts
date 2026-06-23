@@ -1,6 +1,6 @@
 import { CriarMotoristaUseCase } from '../../../../../src/features/motorista/domain/usecases/criar_motorista.usecase'
 import { IMotoristaRepository } from '../../../../../src/features/motorista/domain/repository/motorista.interface.repository'
-import { ErroValidacao, ErroConflito } from '../../../../../src/shared/erros/erro_aplicacao'
+import { ErroConflito } from '../../../../../src/shared/erros/erro_aplicacao'
 import { Motorista } from '../../../../../src/features/motorista/domain/entity/motorista.entity'
 
 describe('CriarMotoristaUseCase', () => {
@@ -31,11 +31,6 @@ describe('CriarMotoristaUseCase', () => {
     expect(resultado).toHaveProperty('atualizadoEm')
     expect(repositorioMock.obterPorNome).toHaveBeenCalledWith('João')
     expect(repositorioMock.salvar).toHaveBeenCalledTimes(1)
-  })
-
-  it('deve lançar ErroValidacao quando nome estiver ausente', async () => {
-    await expect(useCase.executar({ nome: '' })).rejects.toThrow(ErroValidacao)
-    await expect(useCase.executar({ nome: undefined as unknown as string })).rejects.toThrow(ErroValidacao)
   })
 
   it('deve lançar ErroConflito quando nome ja estiver cadastrado', async () => {

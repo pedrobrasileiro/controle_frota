@@ -1,6 +1,6 @@
 import { Automovel } from '../entity/automovel.entity'
 import { IAutomovelRepository } from '../repository/automovel.interface.repository'
-import { ErroNaoEncontrado, ErroValidacao } from '../../../../shared/erros/erro_aplicacao'
+import { ErroNaoEncontrado } from '../../../../shared/erros/erro_aplicacao'
 
 interface AtualizarAutomovelInput {
   id: string
@@ -16,10 +16,6 @@ export class AtualizarAutomovelUseCase {
     const existente = await this.repositorio.obterPorId(input.id)
     if (!existente) {
       throw new ErroNaoEncontrado('Automóvel não encontrado')
-    }
-
-    if (input.placa !== undefined && !input.placa) {
-      throw new ErroValidacao('A placa não pode ser vazia')
     }
 
     const atualizado: Automovel = {

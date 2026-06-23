@@ -1,6 +1,6 @@
 import { AtualizarMotoristaUseCase } from '../../../../../src/features/motorista/domain/usecases/atualizar_motorista.usecase'
 import { IMotoristaRepository } from '../../../../../src/features/motorista/domain/repository/motorista.interface.repository'
-import { ErroNaoEncontrado, ErroValidacao } from '../../../../../src/shared/erros/erro_aplicacao'
+import { ErroNaoEncontrado } from '../../../../../src/shared/erros/erro_aplicacao'
 import { Motorista } from '../../../../../src/features/motorista/domain/entity/motorista.entity'
 
 const criarMotorista = (dados?: Partial<Motorista>): Motorista => ({
@@ -47,10 +47,4 @@ describe('AtualizarMotoristaUseCase', () => {
     await expect(useCase.executar({ id: 'inexistente', nome: 'Novo' })).rejects.toThrow(ErroNaoEncontrado)
   })
 
-  it('deve lançar ErroValidacao quando nome for string vazia', async () => {
-    const existente = criarMotorista()
-    repositorioMock.obterPorId.mockResolvedValue(existente)
-
-    await expect(useCase.executar({ id: '1', nome: '' })).rejects.toThrow(ErroValidacao)
-  })
 })

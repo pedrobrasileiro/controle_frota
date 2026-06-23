@@ -4,7 +4,7 @@ import { IUtilizacaoRepository } from '../repository/utilizacao.interface.reposi
 import { IAutomovelRepository } from '../../../automovel/domain/repository/automovel.interface.repository'
 import { IMotoristaRepository } from '../../../motorista/domain/repository/motorista.interface.repository'
 import { ServicoDominioUtilizacao } from '../servicos/servico_dominio_utilizacao'
-import { ErroNaoEncontrado, ErroValidacao } from '../../../../shared/erros/erro_aplicacao'
+import { ErroNaoEncontrado } from '../../../../shared/erros/erro_aplicacao'
 
 interface IniciarUtilizacaoInput {
   automovelId: string
@@ -21,10 +21,6 @@ export class IniciarUtilizacaoUseCase {
   ) {}
 
   async executar(input: IniciarUtilizacaoInput): Promise<UtilizacaoCompletaDTO> {
-    if (!input.motivo) {
-      throw new ErroValidacao('O campo motivo é obrigatório')
-    }
-
     const automovel = await this.repositorioAutomovel.obterPorId(input.automovelId)
     if (!automovel) {
       throw new ErroNaoEncontrado('Automóvel não encontrado')

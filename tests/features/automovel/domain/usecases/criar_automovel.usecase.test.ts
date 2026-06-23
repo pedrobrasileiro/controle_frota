@@ -1,6 +1,6 @@
 import { CriarAutomovelUseCase } from '../../../../../src/features/automovel/domain/usecases/criar_automovel.usecase'
 import { IAutomovelRepository } from '../../../../../src/features/automovel/domain/repository/automovel.interface.repository'
-import { ErroValidacao, ErroConflito } from '../../../../../src/shared/erros/erro_aplicacao'
+import { ErroConflito } from '../../../../../src/shared/erros/erro_aplicacao'
 
 describe('CriarAutomovelUseCase', () => {
   let repositorio: jest.Mocked<IAutomovelRepository>
@@ -33,14 +33,6 @@ describe('CriarAutomovelUseCase', () => {
     expect(resultado.atualizadoEm).toBeInstanceOf(Date)
     expect(repositorio.obterPorPlaca).toHaveBeenCalledWith('ABC-1234')
     expect(repositorio.salvar).toHaveBeenCalledWith(resultado)
-  })
-
-  it('deve lancar ErroValidacao quando campos obrigatorios estiverem faltando', async () => {
-    const input = { placa: '', cor: 'Preto', marca: 'Ford' }
-
-    await expect(useCase.executar(input)).rejects.toThrow(ErroValidacao)
-
-    expect(repositorio.salvar).not.toHaveBeenCalled()
   })
 
   it('deve lancar ErroConflito quando placa ja estiver cadastrada', async () => {

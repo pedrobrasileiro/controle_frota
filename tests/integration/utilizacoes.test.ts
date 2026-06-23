@@ -59,12 +59,21 @@ describe('Utilizacoes - /api/utilizacoes', () => {
     expect(resposta.status).toBe(400)
   })
 
+  it('deve retornar 400 ao criar utilizacao com motivo de 2 caracteres', async () => {
+    const resposta = await request(app)
+      .post('/api/utilizacoes')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ automovelId, motoristaId, motivo: 'Te' })
+
+    expect(resposta.status).toBe(400)
+  })
+
   it('deve retornar 404 ao usar automovel inexistente', async () => {
     const resposta = await request(app)
       .post('/api/utilizacoes')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        automovelId: 'id-inexistente',
+        automovelId: '00000000-0000-0000-0000-000000000000',
         motoristaId,
         motivo: 'Teste',
       })
@@ -145,7 +154,7 @@ describe('Utilizacoes - /api/utilizacoes', () => {
 
   it('deve retornar 404 ao finalizar utilizacao inexistente', async () => {
     const resposta = await request(app)
-      .put('/api/utilizacoes/id-inexistente/finalizar')
+      .put('/api/utilizacoes/00000000-0000-0000-0000-000000000000/finalizar')
       .set('Authorization', `Bearer ${token}`)
 
     expect(resposta.status).toBe(404)

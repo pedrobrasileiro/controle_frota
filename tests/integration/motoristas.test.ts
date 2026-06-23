@@ -48,6 +48,32 @@ describe('Motoristas - CRUD /api/motoristas', () => {
     expect(resposta.status).toBe(400)
   })
 
+  it('deve retornar 400 ao criar com nome de 1 caractere', async () => {
+    const resposta = await request(app)
+      .post('/api/motoristas')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ nome: 'A' })
+
+    expect(resposta.status).toBe(400)
+  })
+
+  it('deve retornar 400 ao filtrar por nome com menos de 3 caracteres', async () => {
+    const resposta = await request(app)
+      .get('/api/motoristas?nome=An')
+      .set('Authorization', `Bearer ${token}`)
+
+    expect(resposta.status).toBe(400)
+  })
+
+  it('deve retornar 400 ao atualizar sem campos no body', async () => {
+    const resposta = await request(app)
+      .put(`/api/motoristas/${motoristaId}`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({})
+
+    expect(resposta.status).toBe(400)
+  })
+
   it('deve listar motoristas e retornar 200', async () => {
     const resposta = await request(app)
       .get('/api/motoristas')
@@ -86,7 +112,7 @@ describe('Motoristas - CRUD /api/motoristas', () => {
 
   it('deve retornar 404 ao obter motorista inexistente', async () => {
     const resposta = await request(app)
-      .get('/api/motoristas/id-inexistente')
+      .get('/api/motoristas/00000000-0000-0000-0000-000000000000')
       .set('Authorization', `Bearer ${token}`)
 
     expect(resposta.status).toBe(404)

@@ -1,6 +1,6 @@
 import { Motorista } from '../entity/motorista.entity'
 import { IMotoristaRepository } from '../repository/motorista.interface.repository'
-import { ErroNaoEncontrado, ErroValidacao } from '../../../../shared/erros/erro_aplicacao'
+import { ErroNaoEncontrado } from '../../../../shared/erros/erro_aplicacao'
 
 interface AtualizarMotoristaInput {
   id: string
@@ -14,10 +14,6 @@ export class AtualizarMotoristaUseCase {
     const existente = await this.repositorio.obterPorId(input.id)
     if (!existente) {
       throw new ErroNaoEncontrado('Motorista não encontrado')
-    }
-
-    if (input.nome !== undefined && !input.nome) {
-      throw new ErroValidacao('O nome não pode ser vazio')
     }
 
     const atualizado: Motorista = {

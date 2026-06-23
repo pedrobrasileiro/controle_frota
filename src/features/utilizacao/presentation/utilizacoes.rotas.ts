@@ -1,8 +1,13 @@
 import { Router } from 'express'
 import { UtilizacaoController } from './utilizacao.controller'
-import { validarCamposObrigatorios } from '../../../shared/middleware/validacao'
+import { validarSchema } from '../../../shared/middleware/validacao_joi'
 import { middlewareAutenticacao } from '../../../shared/middleware/autenticacao'
 import { assyncHandler } from '../../../shared/middleware/assync_handler'
+import { paramsIdSchema } from '../../../shared/validators/params.validators'
+import {
+  iniciarUtilizacaoSchema,
+  finalizarUtilizacaoSchema,
+} from './validators/utilizacao.validators'
 
 export function criarRotasUtilizacao(controlador: UtilizacaoController): Router {
   const router = Router()
@@ -11,13 +16,21 @@ export function criarRotasUtilizacao(controlador: UtilizacaoController): Router 
 
   router.post(
     '/utilizacoes',
-    validarCamposObrigatorios('automovelId', 'motoristaId', 'motivo'),
+    validarSchema(iniciarUtilizacaoSchema),
     assyncHandler((req, res) => controlador.iniciarUtil(req, res))
   )
 
-  router.put('/utilizacoes/:id/finalizar', assyncHandler((req, res) => controlador.finalizarUtil(req, res)))
+  router.put(
+    '/utilizacoes/:id/finalizar',
+    validarSchema(paramsIdSchema, 'params'),
+    validarSchema(finalizarUtilizacaoSchema),
+    assyncHandler((req, res) => controlador.finalizarUtil(req, res))
+  )
 
-  router.get('/utilizacoes', assyncHandler((req, res) => controlador.listarUtils(req, res)))
+  router.get(
+    '/utilizacoes',
+    assyncHandler((req, res) => controlador.listarUtils(req, res))
+  )
 
   return router
 }

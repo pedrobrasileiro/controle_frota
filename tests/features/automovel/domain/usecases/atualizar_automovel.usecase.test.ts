@@ -1,7 +1,7 @@
 import { AtualizarAutomovelUseCase } from '../../../../../src/features/automovel/domain/usecases/atualizar_automovel.usecase'
 import { IAutomovelRepository } from '../../../../../src/features/automovel/domain/repository/automovel.interface.repository'
 import { Automovel } from '../../../../../src/features/automovel/domain/entity/automovel.entity'
-import { ErroNaoEncontrado, ErroValidacao } from '../../../../../src/shared/erros/erro_aplicacao'
+import { ErroNaoEncontrado } from '../../../../../src/shared/erros/erro_aplicacao'
 
 const criarAutomovel = (id: string): Automovel => ({
   id,
@@ -53,12 +53,4 @@ describe('AtualizarAutomovelUseCase', () => {
     expect(repositorio.atualizar).not.toHaveBeenCalled()
   })
 
-  it('deve lancar ErroValidacao quando placa for string vazia', async () => {
-    const existente = criarAutomovel('1')
-    repositorio.obterPorId.mockResolvedValue(existente)
-
-    await expect(useCase.executar({ id: '1', placa: '' })).rejects.toThrow(ErroValidacao)
-
-    expect(repositorio.atualizar).not.toHaveBeenCalled()
-  })
 })

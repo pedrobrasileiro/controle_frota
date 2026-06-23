@@ -4,7 +4,7 @@ import { IAutomovelRepository } from '../../../../../src/features/automovel/doma
 import { IMotoristaRepository } from '../../../../../src/features/motorista/domain/repository/motorista.interface.repository'
 import { IUtilizacaoRepository } from '../../../../../src/features/utilizacao/domain/repository/utilizacao.interface.repository'
 import { ServicoDominioUtilizacao } from '../../../../../src/features/utilizacao/domain/servicos/servico_dominio_utilizacao'
-import { ErroValidacao, ErroNaoEncontrado, ErroConflito } from '../../../../../src/shared/erros/erro_aplicacao'
+import { ErroNaoEncontrado, ErroConflito } from '../../../../../src/shared/erros/erro_aplicacao'
 
 jest.mock('uuid')
 
@@ -84,12 +84,6 @@ describe('IniciarUtilizacaoUseCase', () => {
       motorista: { id: 'motor-1', nome: 'João Silva' },
       automovel: { id: 'auto-1', placa: 'ABC-1234', cor: 'Preto', marca: 'Fiat' },
     })
-  })
-
-  it('deve lancar ErroValidacao quando motivo estiver ausente', async () => {
-    await expect(
-      useCase.executar({ automovelId: 'auto-1', motoristaId: 'motor-1', motivo: '' })
-    ).rejects.toThrow(ErroValidacao)
   })
 
   it('deve lancar ErroNaoEncontrado quando automovel nao for encontrado', async () => {
