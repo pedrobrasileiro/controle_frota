@@ -1,6 +1,7 @@
 import { ListarAutomoveisUseCase } from '../../../../../src/features/automovel/domain/usecases/listar_automoveis.usecase'
 import { IAutomovelRepository } from '../../../../../src/features/automovel/domain/repository/automovel.interface.repository'
 import { Automovel } from '../../../../../src/features/automovel/domain/entity/automovel.entity'
+import { ErroValidacao } from '../../../../../src/shared/erros/erro_aplicacao'
 
 const criarAutomovel = (id: string): Automovel => ({
   id,
@@ -43,5 +44,23 @@ describe('ListarAutomoveisUseCase', () => {
     await useCase.executar({ cor: 'Preto', marca: 'Ford' })
 
     expect(repositorio.listar).toHaveBeenCalledWith({ cor: 'Preto', marca: 'Ford' })
+  })
+
+  it('deve rejeitar filtro "cor" com menos de 3 caracteres', async () => {
+    await expect(useCase.executar({ cor: 'Pr' })).rejects.toThrow(ErroValidacao)
+    expect(repositorio.listar).not.toHaveBeenCalled()
+  })
+
+  it('deve rejeitar filtro "marca" com menos de 3 caracteres', async () => {
+    await expect(useCase.executar({ marca: 'Fo' })).rejects.toThrow(ErroValidacao)
+    expect(repositorio.listar).not.toHaveBeenCalled()
+  })
+
+  it('deve aceitar filtros com exatamente 3 caracteres', async () => {
+    repositorio.listar.mockResolvedValue([])
+
+    await useCase.executar({ cor: 'Pre', marca: 'For' })
+
+    expect(repositorio.listar).toHaveBeenCalledWith({ cor: 'Pre', marca: 'For' })
   })
 })

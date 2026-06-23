@@ -103,7 +103,7 @@ describe('Utilizacoes - /api/utilizacoes', () => {
     expect(resposta.status).toBe(409)
   })
 
-  it('deve listar utilizacoes e retornar 200', async () => {
+  it('deve listar utilizacoes e retornar 200 com DTO contendo dados aninhados', async () => {
     const resposta = await request(app)
       .get('/api/utilizacoes')
       .set('Authorization', `Bearer ${token}`)
@@ -111,6 +111,19 @@ describe('Utilizacoes - /api/utilizacoes', () => {
     expect(resposta.status).toBe(200)
     expect(Array.isArray(resposta.body)).toBe(true)
     expect(resposta.body.length).toBeGreaterThanOrEqual(1)
+
+    const u = resposta.body[0]
+    expect(u.id).toBeDefined()
+    expect(u.dataInicio).toBeDefined()
+    expect(u.motivo).toBeDefined()
+    expect(u.motorista).toBeDefined()
+    expect(u.motorista.id).toBeDefined()
+    expect(u.motorista.nome).toBeDefined()
+    expect(u.automovel).toBeDefined()
+    expect(u.automovel.id).toBeDefined()
+    expect(u.automovel.placa).toBeDefined()
+    expect(u.automovel.cor).toBeDefined()
+    expect(u.automovel.marca).toBeDefined()
   })
 
   it('deve finalizar utilizacao e retornar 200', async () => {

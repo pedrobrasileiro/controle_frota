@@ -32,10 +32,10 @@ export class AutomovelEmMemoriaDataSource implements IAutomovelDataSource {
   listar(filtros?: { cor?: string; marca?: string }): Automovel[] {
     let resultado = this.automoveis
     if (filtros?.cor) {
-      resultado = resultado.filter((a) => a.cor === filtros.cor)
+      resultado = resultado.filter((a) => a.cor.toLowerCase().includes(filtros.cor!.toLowerCase()))
     }
     if (filtros?.marca) {
-      resultado = resultado.filter((a) => a.marca === filtros.marca)
+      resultado = resultado.filter((a) => a.marca.toLowerCase().includes(filtros.marca!.toLowerCase()))
     }
     return resultado
   }

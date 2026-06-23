@@ -54,18 +54,32 @@ describe('AutomovelEmMemoriaDataSource', () => {
       expect(resultado).toHaveLength(3)
     })
 
-    it('deve filtrar por cor', () => {
+    it('deve filtrar por cor (exata)', () => {
       const resultado = datasource.listar({ cor: 'Preto' })
 
       expect(resultado).toHaveLength(2)
       expect(resultado.every((a) => a.cor === 'Preto')).toBe(true)
     })
 
-    it('deve filtrar por marca', () => {
+    it('deve filtrar por cor (partial match)', () => {
+      const resultado = datasource.listar({ cor: 'ret' })
+
+      expect(resultado).toHaveLength(2)
+      expect(resultado.every((a) => a.cor.toLowerCase().includes('ret'))).toBe(true)
+    })
+
+    it('deve filtrar por marca (exata)', () => {
       const resultado = datasource.listar({ marca: 'Chevrolet' })
 
       expect(resultado).toHaveLength(2)
       expect(resultado.every((a) => a.marca === 'Chevrolet')).toBe(true)
+    })
+
+    it('deve filtrar por marca (partial match)', () => {
+      const resultado = datasource.listar({ marca: 'chev' })
+
+      expect(resultado).toHaveLength(2)
+      expect(resultado.every((a) => a.marca.toLowerCase().includes('chev'))).toBe(true)
     })
 
     it('deve filtrar por cor e marca em combinacao', () => {

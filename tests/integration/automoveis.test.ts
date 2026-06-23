@@ -61,6 +61,38 @@ describe('Automoveis - CRUD /api/automoveis', () => {
     expect(resposta.body.length).toBeGreaterThanOrEqual(1)
   })
 
+  it('deve filtrar automoveis por cor e retornar 200', async () => {
+    await request(app)
+      .post('/api/automoveis')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ placa: 'FILTRO-COR-1', cor: 'Vermelho', marca: 'Fiat' })
+
+    const resposta = await request(app)
+      .get('/api/automoveis?cor=Vermelho')
+      .set('Authorization', `Bearer ${token}`)
+
+    expect(resposta.status).toBe(200)
+    expect(Array.isArray(resposta.body)).toBe(true)
+    expect(resposta.body.length).toBeGreaterThanOrEqual(1)
+    expect(resposta.body.every((a: any) => a.cor === 'Vermelho')).toBe(true)
+  })
+
+  it('deve filtrar automoveis por marca e retornar 200', async () => {
+    await request(app)
+      .post('/api/automoveis')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ placa: 'FILTRO-MARCA-1', cor: 'Azul', marca: 'Honda' })
+
+    const resposta = await request(app)
+      .get('/api/automoveis?marca=Honda')
+      .set('Authorization', `Bearer ${token}`)
+
+    expect(resposta.status).toBe(200)
+    expect(Array.isArray(resposta.body)).toBe(true)
+    expect(resposta.body.length).toBeGreaterThanOrEqual(1)
+    expect(resposta.body.every((a: any) => a.marca === 'Honda')).toBe(true)
+  })
+
   it('deve obter automovel por id e retornar 200', async () => {
     const resposta = await request(app)
       .get(`/api/automoveis/${automovelId}`)

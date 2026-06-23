@@ -58,6 +58,14 @@ describe('MotoristaEmMemoriaDataSource', () => {
       expect(resultado).toHaveLength(1)
       expect(resultado[0]).toEqual(m1)
     })
+
+    it('deve filtrar nome composto por qualquer parte', () => {
+      const m1 = criarMotorista({ id: '1', nome: 'João Silva' })
+      datasource.salvar(m1)
+      expect(datasource.listar({ nome: 'João' })).toHaveLength(1)
+      expect(datasource.listar({ nome: 'Silva' })).toHaveLength(1)
+      expect(datasource.listar({ nome: 'joão silva' })).toHaveLength(1)
+    })
   })
 
   describe('atualizar', () => {
