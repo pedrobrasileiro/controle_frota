@@ -1,4 +1,4 @@
-import { Router } from 'express'
+import { Router, Request, Response } from 'express'
 import swaggerUi from 'swagger-ui-express'
 import fs from 'fs'
 import path from 'path'
@@ -10,6 +10,10 @@ const swaggerDocumento = yaml.load(
 
 export function criarRotasDocs(): Router {
   const router = Router()
+
+  router.get('/health', (_req: Request, res: Response) => {
+    res.json({ status: 'ok', timestamp: new Date().toISOString() })
+  })
 
   router.use('/docs', swaggerUi.serve)
   router.get('/docs', swaggerUi.setup(swaggerDocumento, {

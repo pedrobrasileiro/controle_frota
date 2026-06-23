@@ -78,7 +78,7 @@ npm run test:integration
 npm run test:coverage
 ```
 
-**140 testes, 28 suites, 0 falhas.**
+**143 testes, 29 suites, 0 falhas.**
 
 ## Autenticação
 

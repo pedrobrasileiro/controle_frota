@@ -21,6 +21,32 @@ security:
   - BearerAuth: []
 
 paths:
+  /health:
+    get:
+      summary: Verificar status da API
+      description: Endpoint público que retorna o status atual da API para health checks
+      tags:
+        - Saúde
+      security: []
+      responses:
+        "200":
+          description: API está saudável
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - status
+                  - timestamp
+                properties:
+                  status:
+                    type: string
+                    example: "ok"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2026-06-23T12:00:00.000Z"
+
   /auth:
     post:
       summary: Autenticar e obter token JWT

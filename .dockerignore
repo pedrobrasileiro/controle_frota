@@ -1,0 +1,10 @@
+node_modules
+dist
+tests
+.git
+.gitignore
+.env
+.env.test
+.env.example
+AGENTS.md
+README.md
