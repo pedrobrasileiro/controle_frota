@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
 
-const SEGREDO = process.env.JWT_SECRET ?? 'segredo-super-seguro-teste-seidor-2026'
+const SEGREDO = process.env.JWT_SECRET ?? 'segredo-super-seguro-teste-2026-@123@#$'
 const EXPIRACAO = process.env.JWT_EXPIRATION ?? '1h'
 
 interface PayloadToken {
