@@ -3,8 +3,11 @@
   "version": "1.0.0",
   "description": "API de Controle de Utilização de Automóveis",
   "private": true,
+  "engines": {
+    "node": "22.13.0"
+  },
   "scripts": {
-    "dev": "ts-node-dev --respawn src/principal.ts",
+    "dev": "ts-node-dev --respawn --watch src src/principal.ts",
     "build": "tsc",
     "start": "node dist/principal.js",
     "test": "jest --passWithNoTests",
@@ -14,14 +17,18 @@
   },
   "dependencies": {
     "express": "^4.21.0",
+    "js-yaml": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
+    "swagger-ui-express": "^5.0.1",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
     "@types/jest": "^29.5.12",
+    "@types/js-yaml": "^4.0.9",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/supertest": "^7.2.0",
+    "@types/swagger-ui-express": "^4.1.8",
     "@types/uuid": "^9.0.8",
     "jest": "^29.7.0",
     "supertest": "^7.2.2",

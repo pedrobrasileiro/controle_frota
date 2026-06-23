@@ -1,0 +1,632 @@
+openapi: "3.0.3"
+info:
+  title: API de Controle de Frotas
+  description: |
+    Sistema web para controlar a utilização dos automóveis de uma empresa.
+    Permite cadastrar automóveis e motoristas, além de registrar e gerenciar
+    as utilizações dos veículos.
+
+    ## Autenticação
+
+    A API utiliza JWT (Bearer Token) para autenticação.
+    1. Faça login em `POST /auth` com usuário `USER` e senha `PASS`
+    2. Use o token retornado no header `Authorization: Bearer <token>`
+  version: "1.0.0"
+
+servers:
+  - url: http://localhost:3000/api
+    description: Servidor de desenvolvimento
+
+security:
+  - BearerAuth: []
+
+paths:
+  /auth:
+    post:
+      summary: Autenticar e obter token JWT
+      description: |
+        Gera um token JWT válido para usar nos demais endpoints.
+        Envie o token no header `Authorization: Bearer <token>`.
+      tags:
+        - Autenticação
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginInput"
+      responses:
+        "200":
+          description: Token gerado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginOutput"
+        "401":
+          description: Credenciais inválidas
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+
+  /automoveis:
+    get:
+      summary: Listar automóveis cadastrados
+      description: Retorna a lista de automóveis com opção de filtro por cor e marca
+      tags:
+        - Automóveis
+      parameters:
+        - in: query
+          name: cor
+          required: false
+          schema:
+            type: string
+          description: Filtrar por cor
+        - in: query
+          name: marca
+          required: false
+          schema:
+            type: string
+          description: Filtrar por marca
+      responses:
+        "200":
+          description: Lista de automóveis
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Automovel"
+    post:
+      summary: Cadastrar novo automóvel
+      tags:
+        - Automóveis
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CriarAutomovelInput"
+      responses:
+        "201":
+          description: Automóvel criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Automovel"
+        "400":
+          description: Dados inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+
+  /automoveis/{id}:
+    get:
+      summary: Obter automóvel por ID
+      tags:
+        - Automóveis
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Identificador único do automóvel
+      responses:
+        "200":
+          description: Automóvel encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Automovel"
+        "404":
+          description: Automóvel não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+    put:
+      summary: Atualizar automóvel cadastrado
+      tags:
+        - Automóveis
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AtualizarAutomovelInput"
+      responses:
+        "200":
+          description: Automóvel atualizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Automovel"
+        "400":
+          description: Dados inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+        "404":
+          description: Automóvel não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+    delete:
+      summary: Excluir automóvel cadastrado
+      tags:
+        - Automóveis
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Automóvel excluído com sucesso
+        "404":
+          description: Automóvel não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+        "409":
+          description: Automóvel está em uso e não pode ser excluído
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+
+  /motoristas:
+    get:
+      summary: Listar motoristas cadastrados
+      description: Retorna a lista de motoristas com opção de filtro por nome
+      tags:
+        - Motoristas
+      parameters:
+        - in: query
+          name: nome
+          required: false
+          schema:
+            type: string
+          description: Filtrar por nome
+      responses:
+        "200":
+          description: Lista de motoristas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Motorista"
+    post:
+      summary: Cadastrar novo motorista
+      tags:
+        - Motoristas
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CriarMotoristaInput"
+      responses:
+        "201":
+          description: Motorista criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Motorista"
+        "400":
+          description: Dados inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+
+  /motoristas/{id}:
+    get:
+      summary: Obter motorista por ID
+      tags:
+        - Motoristas
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Motorista encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Motorista"
+        "404":
+          description: Motorista não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+    put:
+      summary: Atualizar motorista cadastrado
+      tags:
+        - Motoristas
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AtualizarMotoristaInput"
+      responses:
+        "200":
+          description: Motorista atualizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Motorista"
+        "400":
+          description: Dados inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+        "404":
+          description: Motorista não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+    delete:
+      summary: Excluir motorista cadastrado
+      tags:
+        - Motoristas
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Motorista excluído com sucesso
+        "404":
+          description: Motorista não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+        "409":
+          description: Motorista está em uso e não pode ser excluído
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+
+  /utilizacoes:
+    get:
+      summary: Listar registros de utilização
+      description: |
+        Retorna todos os registros de utilização cadastrados com os dados
+        completos do motorista e do automóvel utilizado
+      tags:
+        - Utilizações
+      responses:
+        "200":
+          description: Lista de utilizações
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UtilizacaoCompleta"
+    post:
+      summary: Iniciar utilização de automóvel
+      description: |
+        Registra que um motorista começou a utilizar um automóvel.
+        Valida se o automóvel e o motorista estão disponíveis.
+      tags:
+        - Utilizações
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IniciarUtilizacaoInput"
+      responses:
+        "201":
+          description: Utilização iniciada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UtilizacaoCompleta"
+        "400":
+          description: Dados inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+        "409":
+          description: |
+            Conflito — automóvel já está em uso ou motorista já está
+            utilizando outro automóvel
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+
+  /utilizacoes/{id}/finalizar:
+    put:
+      summary: Finalizar utilização de automóvel
+      description: Registra a data de término da utilização
+      tags:
+        - Utilizações
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FinalizarUtilizacaoInput"
+      responses:
+        "200":
+          description: Utilização finalizada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UtilizacaoCompleta"
+        "404":
+          description: Utilização não encontrada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+        "409":
+          description: Utilização já foi finalizada anteriormente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Token JWT obtido via POST /auth
+
+  schemas:
+    LoginInput:
+      type: object
+      required:
+        - usuario
+        - senha
+      properties:
+        usuario:
+          type: string
+          example: "admin"
+        senha:
+          type: string
+          format: password
+          example: "admin123"
+
+    LoginOutput:
+      type: object
+      required:
+        - token
+        - usuario
+      properties:
+        token:
+          type: string
+          description: Token JWT (Bearer token)
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        usuario:
+          type: string
+          example: "admin"
+
+    Automovel:
+      type: object
+      required:
+        - id
+        - placa
+        - cor
+        - marca
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Identificador único do automóvel
+        placa:
+          type: string
+          example: "ABC-1234"
+        cor:
+          type: string
+          example: "Preto"
+        marca:
+          type: string
+          example: "Toyota"
+
+    CriarAutomovelInput:
+      type: object
+      required:
+        - placa
+        - cor
+        - marca
+      properties:
+        placa:
+          type: string
+          example: "ABC-1234"
+        cor:
+          type: string
+          example: "Preto"
+        marca:
+          type: string
+          example: "Toyota"
+
+    AtualizarAutomovelInput:
+      type: object
+      properties:
+        placa:
+          type: string
+          example: "XYZ-9876"
+        cor:
+          type: string
+          example: "Branco"
+        marca:
+          type: string
+          example: "Honda"
+
+    Motorista:
+      type: object
+      required:
+        - id
+        - nome
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Identificador único do motorista
+        nome:
+          type: string
+          example: "João Silva"
+
+    CriarMotoristaInput:
+      type: object
+      required:
+        - nome
+      properties:
+        nome:
+          type: string
+          example: "João Silva"
+
+    AtualizarMotoristaInput:
+      type: object
+      properties:
+        nome:
+          type: string
+          example: "João Silva Atualizado"
+
+    UtilizacaoCompleta:
+      type: object
+      required:
+        - id
+        - dataInicio
+        - dataTermino
+        - motivo
+        - motorista
+        - automovel
+      properties:
+        id:
+          type: string
+          format: uuid
+        dataInicio:
+          type: string
+          format: date-time
+          description: Data e hora de início da utilização
+        dataTermino:
+          type: string
+          format: date-time
+          nullable: true
+          description: Data e hora de término (null se ainda em andamento)
+        motivo:
+          type: string
+          description: Motivo da utilização
+        motorista:
+          type: object
+          required:
+            - id
+            - nome
+          properties:
+            id:
+              type: string
+              format: uuid
+            nome:
+              type: string
+        automovel:
+          type: object
+          required:
+            - id
+            - placa
+            - cor
+            - marca
+          properties:
+            id:
+              type: string
+              format: uuid
+            placa:
+              type: string
+            cor:
+              type: string
+            marca:
+              type: string
+
+    IniciarUtilizacaoInput:
+      type: object
+      required:
+        - automovelId
+        - motoristaId
+        - motivo
+      properties:
+        automovelId:
+          type: string
+          format: uuid
+          description: ID do automóvel a ser utilizado
+        motoristaId:
+          type: string
+          format: uuid
+          description: ID do motorista que irá utilizar
+        motivo:
+          type: string
+          description: Motivo da utilização
+
+    FinalizarUtilizacaoInput:
+      type: object
+      properties:
+        dataTermino:
+          type: string
+          format: date-time
+          description: |
+            Data de término (opcional). Se não informada, usa a data/hora atual.
+      example:
+        dataTermino: "2026-06-22T18:00:00.000Z"
+
+    Erro:
+      type: object
+      properties:
+        mensagem:
+          type: string
+          description: Mensagem descritiva do erro
+        codigo:
+          type: integer
+          description: Código HTTP do erro
+      example:
+        mensagem: "Recurso não encontrado"
+        codigo: 404

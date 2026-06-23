@@ -34,6 +34,7 @@ import { AuthController } from '../features/auth/presentation/auth.controller'
 import { criarRotasAuth } from '../features/auth/presentation/auth.rotas'
 import { AuthMockDataSource } from '../features/auth/infra/datasource/auth_mock_datasource'
 import { AuthRepository } from '../features/auth/infra/repository/auth.repository'
+import { criarRotasDocs } from '../features/docs/presentation/docs.rotas'
 
 export function comporRotas(): Router {
   const rotas = Router()
@@ -97,6 +98,7 @@ export function comporRotas(): Router {
   )
 
   // Routes
+  rotas.use('/api', criarRotasDocs())
   rotas.use('/api', criarRotasAuth(controladorAuth))
   rotas.use('/api', criarRotasAutomovel(controladorAutomovel))
   rotas.use('/api', criarRotasMotorista(controladorMotorista))
