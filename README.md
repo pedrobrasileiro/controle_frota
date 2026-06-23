@@ -107,7 +107,7 @@ curl http://localhost:3000/api/automoveis \
 ```
 src/
 ├── app.ts                          # Factory do Express
-├── principal.ts                    # Entrypoint (app.listen)
+├── main.ts                         # Entrypoint (app.listen)
 ├── composicao/composicao_rotas.ts  # Injeção de dependência manual
 ├── features/
 │   ├── automovel/                  # CRUD automóveis
