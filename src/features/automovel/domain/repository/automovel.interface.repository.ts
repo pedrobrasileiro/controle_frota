@@ -5,5 +5,6 @@ export interface IAutomovelRepository {
   atualizar(automovel: Automovel): Promise<Automovel>
   excluir(id: string): Promise<void>
   obterPorId(id: string): Promise<Automovel | null>
+  obterPorPlaca(placa: string): Promise<Automovel | null>
   listar(filtros?: { cor?: string; marca?: string }): Promise<Automovel[]>
 }

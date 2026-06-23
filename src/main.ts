@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import { criarApp } from './app'
 
 const app = criarApp()

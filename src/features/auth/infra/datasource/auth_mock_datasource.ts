@@ -3,7 +3,7 @@ import { IAuthDataSource } from './iauth_datasource'
 
 export class AuthMockDataSource implements IAuthDataSource {
   private readonly usuarios: Usuario[] = [
-    { usuario: 'admin', senha: 'admin123' },
+    { usuario: process.env.AUTH_USER ?? '', senha: process.env.AUTH_PASSWORD ?? '' },
   ]
 
   buscarPorUsuario(usuario: string): Usuario | null {

@@ -19,6 +19,7 @@ describe('MotoristaRepository', () => {
       atualizar: jest.fn(),
       excluir: jest.fn(),
       obterPorId: jest.fn(),
+      obterPorNome: jest.fn(),
       listar: jest.fn(),
     }
     repositorio = new MotoristaRepository(datasourceMock)

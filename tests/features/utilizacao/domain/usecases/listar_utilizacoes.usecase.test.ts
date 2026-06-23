@@ -39,6 +39,7 @@ describe('ListarUtilizacoesUseCase', () => {
       atualizar: jest.fn(),
       excluir: jest.fn(),
       obterPorId: jest.fn(),
+      obterPorPlaca: jest.fn(),
       listar: jest.fn(),
     }
     repositorioMotorista = {
@@ -46,6 +47,7 @@ describe('ListarUtilizacoesUseCase', () => {
       atualizar: jest.fn(),
       excluir: jest.fn(),
       obterPorId: jest.fn(),
+      obterPorNome: jest.fn(),
       listar: jest.fn(),
     }
     useCase = new ListarUtilizacoesUseCase(

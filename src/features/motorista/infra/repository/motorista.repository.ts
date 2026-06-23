@@ -21,6 +21,10 @@ export class MotoristaRepository implements IMotoristaRepository {
     return this.datasource.obterPorId(id)
   }
 
+  async obterPorNome(nome: string): Promise<Motorista | null> {
+    return this.datasource.obterPorNome(nome)
+  }
+
   async listar(filtros?: { nome?: string }): Promise<Motorista[]> {
     return this.datasource.listar(filtros)
   }

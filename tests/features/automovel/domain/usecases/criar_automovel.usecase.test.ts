@@ -1,6 +1,6 @@
 import { CriarAutomovelUseCase } from '../../../../../src/features/automovel/domain/usecases/criar_automovel.usecase'
 import { IAutomovelRepository } from '../../../../../src/features/automovel/domain/repository/automovel.interface.repository'
-import { ErroValidacao } from '../../../../../src/shared/erros/erro_aplicacao'
+import { ErroValidacao, ErroConflito } from '../../../../../src/shared/erros/erro_aplicacao'
 
 describe('CriarAutomovelUseCase', () => {
   let repositorio: jest.Mocked<IAutomovelRepository>
@@ -12,6 +12,7 @@ describe('CriarAutomovelUseCase', () => {
       atualizar: jest.fn(),
       excluir: jest.fn(),
       obterPorId: jest.fn(),
+      obterPorPlaca: jest.fn(),
       listar: jest.fn(),
     }
     useCase = new CriarAutomovelUseCase(repositorio)
@@ -19,6 +20,7 @@ describe('CriarAutomovelUseCase', () => {
 
   it('deve criar automovel com dados validos', async () => {
     const input = { placa: 'ABC-1234', cor: 'Preto', marca: 'Ford' }
+    repositorio.obterPorPlaca.mockResolvedValue(null)
     repositorio.salvar.mockImplementation(async (automovel) => automovel)
 
     const resultado = await useCase.executar(input)
@@ -29,6 +31,7 @@ describe('CriarAutomovelUseCase', () => {
     expect(resultado.id).toBeDefined()
     expect(resultado.criadoEm).toBeInstanceOf(Date)
     expect(resultado.atualizadoEm).toBeInstanceOf(Date)
+    expect(repositorio.obterPorPlaca).toHaveBeenCalledWith('ABC-1234')
     expect(repositorio.salvar).toHaveBeenCalledWith(resultado)
   })
 
@@ -36,6 +39,15 @@ describe('CriarAutomovelUseCase', () => {
     const input = { placa: '', cor: 'Preto', marca: 'Ford' }
 
     await expect(useCase.executar(input)).rejects.toThrow(ErroValidacao)
+
+    expect(repositorio.salvar).not.toHaveBeenCalled()
+  })
+
+  it('deve lancar ErroConflito quando placa ja estiver cadastrada', async () => {
+    const input = { placa: 'ABC-1234', cor: 'Preto', marca: 'Ford' }
+    repositorio.obterPorPlaca.mockResolvedValue({ id: '1', placa: 'ABC-1234', cor: 'Branco', marca: 'Fiat' } as any)
+
+    await expect(useCase.executar(input)).rejects.toThrow(ErroConflito)
 
     expect(repositorio.salvar).not.toHaveBeenCalled()
   })

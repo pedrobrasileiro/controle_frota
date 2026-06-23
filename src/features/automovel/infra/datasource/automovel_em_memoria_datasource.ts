@@ -25,6 +25,10 @@ export class AutomovelEmMemoriaDataSource implements IAutomovelDataSource {
     return this.automoveis.find((a) => a.id === id) ?? null
   }
 
+  obterPorPlaca(placa: string): Automovel | null {
+    return this.automoveis.find((a) => a.placa === placa) ?? null
+  }
+
   listar(filtros?: { cor?: string; marca?: string }): Automovel[] {
     let resultado = this.automoveis
     if (filtros?.cor) {

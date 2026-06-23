@@ -22,6 +22,7 @@ describe('AtualizarAutomovelUseCase', () => {
       atualizar: jest.fn(),
       excluir: jest.fn(),
       obterPorId: jest.fn(),
+      obterPorPlaca: jest.fn(),
       listar: jest.fn(),
     }
     useCase = new AtualizarAutomovelUseCase(repositorio)

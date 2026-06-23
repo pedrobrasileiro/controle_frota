@@ -5,5 +5,6 @@ export interface IMotoristaDataSource {
   atualizar(motorista: Motorista): Motorista
   excluir(id: string): void
   obterPorId(id: string): Motorista | null
+  obterPorNome(nome: string): Motorista | null
   listar(filtros?: { nome?: string }): Motorista[]
 }

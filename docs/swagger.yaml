@@ -436,7 +436,7 @@ components:
         senha:
           type: string
           format: password
-          example: "admin123"
+          example: "123456"
 
     LoginOutput:
       type: object

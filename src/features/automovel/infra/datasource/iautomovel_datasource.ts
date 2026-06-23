@@ -5,5 +5,6 @@ export interface IAutomovelDataSource {
   atualizar(automovel: Automovel): Automovel
   excluir(id: string): void
   obterPorId(id: string): Automovel | null
+  obterPorPlaca(placa: string): Automovel | null
   listar(filtros?: { cor?: string; marca?: string }): Automovel[]
 }

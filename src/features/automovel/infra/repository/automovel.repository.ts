@@ -21,6 +21,10 @@ export class AutomovelRepository implements IAutomovelRepository {
     return this.datasource.obterPorId(id)
   }
 
+  async obterPorPlaca(placa: string): Promise<Automovel | null> {
+    return this.datasource.obterPorPlaca(placa)
+  }
+
   async listar(filtros?: { cor?: string; marca?: string }): Promise<Automovel[]> {
     return this.datasource.listar(filtros)
   }

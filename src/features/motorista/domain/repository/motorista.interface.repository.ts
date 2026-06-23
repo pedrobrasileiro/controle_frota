@@ -5,5 +5,6 @@ export interface IMotoristaRepository {
   atualizar(motorista: Motorista): Promise<Motorista>
   excluir(id: string): Promise<void>
   obterPorId(id: string): Promise<Motorista | null>
+  obterPorNome(nome: string): Promise<Motorista | null>
   listar(filtros?: { nome?: string }): Promise<Motorista[]>
 }

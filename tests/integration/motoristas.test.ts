@@ -1,6 +1,9 @@
 import request from 'supertest'
 import { criarApp } from '../../src/app'
 
+const USUARIO_VALIDO = process.env.AUTH_USER!
+const SENHA_VALIDA = process.env.AUTH_PASSWORD!
+
 describe('Motoristas - CRUD /api/motoristas', () => {
   let app: ReturnType<typeof criarApp>
   let token: string
@@ -10,7 +13,7 @@ describe('Motoristas - CRUD /api/motoristas', () => {
     app = criarApp()
     const login = await request(app)
       .post('/api/auth')
-      .send({ usuario: 'admin', senha: 'admin123' })
+      .send({ usuario: USUARIO_VALIDO, senha: SENHA_VALIDA })
     token = login.body.token
   })
 
@@ -24,6 +27,16 @@ describe('Motoristas - CRUD /api/motoristas', () => {
     expect(resposta.body.id).toBeDefined()
     expect(resposta.body.nome).toBe('João Silva')
     motoristaId = resposta.body.id
+  })
+
+  it('deve retornar 409 ao cadastrar motorista com nome duplicado', async () => {
+    const resposta = await request(app)
+      .post('/api/motoristas')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ nome: 'João Silva' })
+
+    expect(resposta.status).toBe(409)
+    expect(resposta.body.mensagem).toBe('Já existe um motorista cadastrado com este nome')
   })
 
   it('deve retornar 400 ao criar sem nome', async () => {

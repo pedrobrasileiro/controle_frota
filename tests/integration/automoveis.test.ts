@@ -1,6 +1,10 @@
 import request from 'supertest'
 import { criarApp } from '../../src/app'
 
+const USUARIO_VALIDO = process.env.AUTH_USER!
+const SENHA_VALIDA = process.env.AUTH_PASSWORD!
+const PLACA_UNICA = `ABC-${Date.now()}`
+
 describe('Automoveis - CRUD /api/automoveis', () => {
   let app: ReturnType<typeof criarApp>
   let token: string
@@ -10,7 +14,7 @@ describe('Automoveis - CRUD /api/automoveis', () => {
     app = criarApp()
     const login = await request(app)
       .post('/api/auth')
-      .send({ usuario: 'admin', senha: 'admin123' })
+      .send({ usuario: USUARIO_VALIDO, senha: SENHA_VALIDA })
     token = login.body.token
   })
 
@@ -18,14 +22,24 @@ describe('Automoveis - CRUD /api/automoveis', () => {
     const resposta = await request(app)
       .post('/api/automoveis')
       .set('Authorization', `Bearer ${token}`)
-      .send({ placa: 'ABC-1234', cor: 'Preto', marca: 'Ford' })
+      .send({ placa: PLACA_UNICA, cor: 'Preto', marca: 'Ford' })
 
     expect(resposta.status).toBe(201)
     expect(resposta.body.id).toBeDefined()
-    expect(resposta.body.placa).toBe('ABC-1234')
+    expect(resposta.body.placa).toBe(PLACA_UNICA)
     expect(resposta.body.cor).toBe('Preto')
     expect(resposta.body.marca).toBe('Ford')
     automovelId = resposta.body.id
+  })
+
+  it('deve retornar 409 ao cadastrar automovel com placa duplicada', async () => {
+    const resposta = await request(app)
+      .post('/api/automoveis')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ placa: PLACA_UNICA, cor: 'Branco', marca: 'Fiat' })
+
+    expect(resposta.status).toBe(409)
+    expect(resposta.body.mensagem).toBe('Já existe um automóvel cadastrado com esta placa')
   })
 
   it('deve retornar 400 ao criar sem campos obrigatorios', async () => {
@@ -54,7 +68,7 @@ describe('Automoveis - CRUD /api/automoveis', () => {
 
     expect(resposta.status).toBe(200)
     expect(resposta.body.id).toBe(automovelId)
-    expect(resposta.body.placa).toBe('ABC-1234')
+    expect(resposta.body.placa).toBe(PLACA_UNICA)
   })
 
   it('deve retornar 404 ao obter automovel inexistente', async () => {

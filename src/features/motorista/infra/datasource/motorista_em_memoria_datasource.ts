@@ -25,6 +25,10 @@ export class MotoristaEmMemoriaDataSource implements IMotoristaDataSource {
     return this.motoristas.find((m) => m.id === id) ?? null
   }
 
+  obterPorNome(nome: string): Motorista | null {
+    return this.motoristas.find((m) => m.nome === nome) ?? null
+  }
+
   listar(filtros?: { nome?: string }): Motorista[] {
     let resultado = this.motoristas
     if (filtros?.nome) {

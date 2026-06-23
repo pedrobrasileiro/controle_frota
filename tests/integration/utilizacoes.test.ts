@@ -1,6 +1,9 @@
 import request from 'supertest'
 import { criarApp } from '../../src/app'
 
+const USUARIO_VALIDO = process.env.AUTH_USER!
+const SENHA_VALIDA = process.env.AUTH_PASSWORD!
+
 describe('Utilizacoes - /api/utilizacoes', () => {
   let app: ReturnType<typeof criarApp>
   let token: string
@@ -12,7 +15,7 @@ describe('Utilizacoes - /api/utilizacoes', () => {
     app = criarApp()
     const login = await request(app)
       .post('/api/auth')
-      .send({ usuario: 'admin', senha: 'admin123' })
+      .send({ usuario: USUARIO_VALIDO, senha: SENHA_VALIDA })
     token = login.body.token
 
     const auto = await request(app)
@@ -77,6 +80,24 @@ describe('Utilizacoes - /api/utilizacoes', () => {
         automovelId,
         motoristaId,
         motivo: 'Tentativa conflito',
+      })
+
+    expect(resposta.status).toBe(409)
+  })
+
+  it('deve retornar 409 ao tentar usar mesmo motorista em outro automovel', async () => {
+    const segundoAuto = await request(app)
+      .post('/api/automoveis')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ placa: 'BBB-2222', cor: 'Vermelho', marca: 'Toyota' })
+
+    const resposta = await request(app)
+      .post('/api/utilizacoes')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        automovelId: segundoAuto.body.id,
+        motoristaId,
+        motivo: 'Motorista ocupado',
       })
 
     expect(resposta.status).toBe(409)

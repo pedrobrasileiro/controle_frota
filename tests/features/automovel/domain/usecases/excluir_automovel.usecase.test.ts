@@ -25,6 +25,7 @@ describe('ExcluirAutomovelUseCase', () => {
       atualizar: jest.fn(),
       excluir: jest.fn(),
       obterPorId: jest.fn(),
+      obterPorPlaca: jest.fn(),
       listar: jest.fn(),
     }
     repositorioUtilizacao = {
