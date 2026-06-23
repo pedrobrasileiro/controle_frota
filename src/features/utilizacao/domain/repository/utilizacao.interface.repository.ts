@@ -4,7 +4,7 @@ export interface IUtilizacaoRepository {
   salvar(utilizacao: Utilizacao): Promise<Utilizacao>
   atualizar(utilizacao: Utilizacao): Promise<Utilizacao>
   obterPorId(id: string): Promise<Utilizacao | null>
-  listar(): Promise<Utilizacao[]>
+  listar(filtros?: { apenasAbertas?: boolean }): Promise<Utilizacao[]>
   obterUtilizacaoAtivaPorAutomovel(automovelId: string): Promise<Utilizacao | null>
   obterUtilizacaoAtivaPorMotorista(motoristaId: string): Promise<Utilizacao | null>
 }

@@ -7,6 +7,7 @@ import { paramsIdSchema } from '../../../shared/validators/params.validators'
 import {
   iniciarUtilizacaoSchema,
   finalizarUtilizacaoSchema,
+  listarUtilizacoesSchema,
 } from './validators/utilizacao.validators'
 
 export function criarRotasUtilizacao(controlador: UtilizacaoController): Router {
@@ -29,6 +30,7 @@ export function criarRotasUtilizacao(controlador: UtilizacaoController): Router 
 
   router.get(
     '/utilizacoes',
+    validarSchema(listarUtilizacoesSchema, 'query'),
     assyncHandler((req, res) => controlador.listarUtils(req, res))
   )
 

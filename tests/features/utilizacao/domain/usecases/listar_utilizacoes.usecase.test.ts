@@ -83,4 +83,12 @@ describe('ListarUtilizacoesUseCase', () => {
 
     expect(result).toEqual([])
   })
+
+  it('deve passar filtro apenasAbertas para o repositorio', async () => {
+    repositorioUtilizacao.listar.mockResolvedValue([])
+
+    await useCase.executar({ apenasAbertas: true })
+
+    expect(repositorioUtilizacao.listar).toHaveBeenCalledWith({ apenasAbertas: true })
+  })
 })

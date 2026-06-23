@@ -21,8 +21,12 @@ export class UtilizacaoEmMemoriaDataSource implements IUtilizacaoDataSource {
     return this.utilizacoes.find((u) => u.id === id) ?? null
   }
 
-  listar(): Utilizacao[] {
-    return [...this.utilizacoes]
+  listar(filtros?: { apenasAbertas?: boolean }): Utilizacao[] {
+    let resultado = this.utilizacoes
+    if (filtros?.apenasAbertas) {
+      resultado = resultado.filter((u) => u.dataTermino === null)
+    }
+    return [...resultado]
   }
 
   obterPorAutomovelId(automovelId: string): Utilizacao[] {

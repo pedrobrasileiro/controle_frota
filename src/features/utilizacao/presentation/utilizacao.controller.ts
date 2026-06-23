@@ -27,7 +27,9 @@ export class UtilizacaoController {
   }
 
   async listarUtils(req: Request, res: Response): Promise<void> {
-    const resultado = await this.listar.executar()
+    const resultado = await this.listar.executar({
+      apenasAbertas: req.query.apenasAbertas as boolean | undefined,
+    })
     res.status(200).json(resultado)
   }
 }

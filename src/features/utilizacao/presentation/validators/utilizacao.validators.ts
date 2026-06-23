@@ -9,3 +9,7 @@ export const iniciarUtilizacaoSchema = Joi.object({
 export const finalizarUtilizacaoSchema = Joi.object({
   dataTermino: Joi.string().isoDate(),
 })
+
+export const listarUtilizacoesSchema = Joi.object({
+  apenasAbertas: Joi.boolean(),
+})

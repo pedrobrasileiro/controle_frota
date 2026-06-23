@@ -135,6 +135,28 @@ describe('Utilizacoes - /api/utilizacoes', () => {
     expect(u.automovel.marca).toBeDefined()
   })
 
+  it('deve listar apenas utilizacoes abertas quando ?apenasAbertas=true', async () => {
+    const resposta = await request(app)
+      .get('/api/utilizacoes?apenasAbertas=true')
+      .set('Authorization', `Bearer ${token}`)
+
+    expect(resposta.status).toBe(200)
+    expect(Array.isArray(resposta.body)).toBe(true)
+    for (const u of resposta.body) {
+      expect(u.dataTermino).toBeNull()
+    }
+  })
+
+  it('deve listar todas quando ?apenasAbertas=false', async () => {
+    const resposta = await request(app)
+      .get('/api/utilizacoes?apenasAbertas=false')
+      .set('Authorization', `Bearer ${token}`)
+
+    expect(resposta.status).toBe(200)
+    expect(Array.isArray(resposta.body)).toBe(true)
+    expect(resposta.body.length).toBeGreaterThanOrEqual(1)
+  })
+
   it('deve finalizar utilizacao e retornar 200', async () => {
     const resposta = await request(app)
       .put(`/api/utilizacoes/${utilizacaoId}/finalizar`)

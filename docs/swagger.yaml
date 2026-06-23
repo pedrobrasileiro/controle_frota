@@ -420,9 +420,18 @@ paths:
       summary: Listar registros de utilização
       description: |
         Retorna todos os registros de utilização cadastrados com os dados
-        completos do motorista e do automóvel utilizado
+        completos do motorista e do automóvel utilizado.
+        Use `?apenasAbertas=true` para filtrar apenas utilizações em aberto
+        (sem data de término).
       tags:
         - Utilizações
+      parameters:
+        - in: query
+          name: apenasAbertas
+          required: false
+          schema:
+            type: boolean
+          description: Se true, retorna apenas utilizações com dataTermino === null
       responses:
         "200":
           description: Lista de utilizações

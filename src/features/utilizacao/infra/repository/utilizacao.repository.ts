@@ -17,8 +17,8 @@ export class UtilizacaoRepository implements IUtilizacaoRepository {
     return this.datasource.obterPorId(id)
   }
 
-  async listar(): Promise<Utilizacao[]> {
-    return this.datasource.listar()
+  async listar(filtros?: { apenasAbertas?: boolean }): Promise<Utilizacao[]> {
+    return this.datasource.listar(filtros)
   }
 
   async obterUtilizacaoAtivaPorAutomovel(automovelId: string): Promise<Utilizacao | null> {

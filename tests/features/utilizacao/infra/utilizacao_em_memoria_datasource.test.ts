@@ -71,4 +71,51 @@ describe('UtilizacaoEmMemoriaDataSource', () => {
     datasource.salvar(u3)
     expect(datasource.obterPorMotoristaId('motor-1')).toEqual([u1, u2])
   })
+
+  describe('listar com filtro apenasAbertas', () => {
+    it('deve retornar apenas utilizacoes com dataTermino null quando true', () => {
+      const aberta = makeUtilizacao({ id: '1', dataTermino: null })
+      const finalizada = makeUtilizacao({ id: '2', dataTermino: new Date('2026-06-01') })
+      datasource.salvar(aberta)
+      datasource.salvar(finalizada)
+
+      const resultado = datasource.listar({ apenasAbertas: true })
+
+      expect(resultado).toHaveLength(1)
+      expect(resultado[0].id).toBe('1')
+    })
+
+    it('deve retornar todas quando false', () => {
+      const aberta = makeUtilizacao({ id: '1', dataTermino: null })
+      const finalizada = makeUtilizacao({ id: '2', dataTermino: new Date('2026-06-01') })
+      datasource.salvar(aberta)
+      datasource.salvar(finalizada)
+
+      const resultado = datasource.listar({ apenasAbertas: false })
+
+      expect(resultado).toHaveLength(2)
+    })
+
+    it('deve retornar todas quando filtro nao informado', () => {
+      const aberta = makeUtilizacao({ id: '1', dataTermino: null })
+      const finalizada = makeUtilizacao({ id: '2', dataTermino: new Date('2026-06-01') })
+      datasource.salvar(aberta)
+      datasource.salvar(finalizada)
+
+      const resultado = datasource.listar()
+
+      expect(resultado).toHaveLength(2)
+    })
+
+    it('nao deve modificar a lista original ao filtrar', () => {
+      const aberta = makeUtilizacao({ id: '1', dataTermino: null })
+      const finalizada = makeUtilizacao({ id: '2', dataTermino: new Date('2026-06-01') })
+      datasource.salvar(aberta)
+      datasource.salvar(finalizada)
+
+      datasource.listar({ apenasAbertas: true })
+
+      expect(datasource.listar()).toHaveLength(2)
+    })
+  })
 })

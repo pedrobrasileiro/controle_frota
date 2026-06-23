@@ -3,6 +3,10 @@ import { IUtilizacaoRepository } from '../repository/utilizacao.interface.reposi
 import { IAutomovelRepository } from '../../../automovel/domain/repository/automovel.interface.repository'
 import { IMotoristaRepository } from '../../../motorista/domain/repository/motorista.interface.repository'
 
+interface ListarUtilizacoesInput {
+  apenasAbertas?: boolean
+}
+
 export class ListarUtilizacoesUseCase {
   constructor(
     private readonly repositorioUtilizacao: IUtilizacaoRepository,
@@ -10,8 +14,8 @@ export class ListarUtilizacoesUseCase {
     private readonly repositorioMotorista: IMotoristaRepository
   ) {}
 
-  async executar(): Promise<UtilizacaoCompletaDTO[]> {
-    const utilizacoes = await this.repositorioUtilizacao.listar()
+  async executar(input?: ListarUtilizacoesInput): Promise<UtilizacaoCompletaDTO[]> {
+    const utilizacoes = await this.repositorioUtilizacao.listar(input)
 
     const resultado: UtilizacaoCompletaDTO[] = []
 
