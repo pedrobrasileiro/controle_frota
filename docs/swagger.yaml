@@ -43,6 +43,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/LoginOutput"
+        "400":
+          description: Dados inválidos (campos obrigatórios ausentes)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
         "401":
           description: Credenciais inválidas
           content:
@@ -53,7 +59,7 @@ paths:
   /automoveis:
     get:
       summary: Listar automóveis cadastrados
-      description: Retorna a lista de automóveis com opção de filtro por cor e marca
+      description: Retorna a lista de automóveis com opção de filtro por cor e marca (mínimo 3 caracteres cada)
       tags:
         - Automóveis
       parameters:
@@ -62,13 +68,15 @@ paths:
           required: false
           schema:
             type: string
-          description: Filtrar por cor
+            minLength: 3
+          description: Filtrar por cor (mínimo 3 caracteres)
         - in: query
           name: marca
           required: false
           schema:
             type: string
-          description: Filtrar por marca
+            minLength: 3
+          description: Filtrar por marca (mínimo 3 caracteres)
       responses:
         "200":
           description: Lista de automóveis
@@ -78,6 +86,12 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Automovel"
+        "400":
+          description: Filtro com menos de 3 caracteres
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
     post:
       summary: Cadastrar novo automóvel
       tags:
@@ -96,7 +110,13 @@ paths:
               schema:
                 $ref: "#/components/schemas/Automovel"
         "400":
-          description: Dados inválidos
+          description: Dados inválidos (campos obrigatórios ausentes, placa fora do formato, etc.)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+        "409":
+          description: Placa já cadastrada
           content:
             application/json:
               schema:
@@ -114,7 +134,7 @@ paths:
           schema:
             type: string
             format: uuid
-          description: Identificador único do automóvel
+          description: Identificador único do automóvel (UUID)
       responses:
         "200":
           description: Automóvel encontrado
@@ -122,6 +142,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Automovel"
+        "400":
+          description: ID inválido (não é um UUID válido)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
         "404":
           description: Automóvel não encontrado
           content:
@@ -130,6 +156,7 @@ paths:
                 $ref: "#/components/schemas/Erro"
     put:
       summary: Atualizar automóvel cadastrado
+      description: Pelo menos um campo deve ser enviado no body
       tags:
         - Automóveis
       parameters:
@@ -139,6 +166,7 @@ paths:
           schema:
             type: string
             format: uuid
+          description: Identificador único do automóvel (UUID)
       requestBody:
         required: true
         content:
@@ -153,7 +181,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Automovel"
         "400":
-          description: Dados inválidos
+          description: Dados inválidos (body vazio, campos com formato inválido, UUID inválido)
           content:
             application/json:
               schema:
@@ -175,9 +203,16 @@ paths:
           schema:
             type: string
             format: uuid
+          description: Identificador único do automóvel (UUID)
       responses:
         "204":
           description: Automóvel excluído com sucesso
+        "400":
+          description: ID inválido (não é um UUID válido)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
         "404":
           description: Automóvel não encontrado
           content:
@@ -194,7 +229,7 @@ paths:
   /motoristas:
     get:
       summary: Listar motoristas cadastrados
-      description: Retorna a lista de motoristas com opção de filtro por nome
+      description: Retorna a lista de motoristas com opção de filtro por nome (mínimo 3 caracteres)
       tags:
         - Motoristas
       parameters:
@@ -203,7 +238,8 @@ paths:
           required: false
           schema:
             type: string
-          description: Filtrar por nome
+            minLength: 3
+          description: Filtrar por nome (mínimo 3 caracteres)
       responses:
         "200":
           description: Lista de motoristas
@@ -213,6 +249,12 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Motorista"
+        "400":
+          description: Filtro com menos de 3 caracteres
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
     post:
       summary: Cadastrar novo motorista
       tags:
@@ -231,7 +273,13 @@ paths:
               schema:
                 $ref: "#/components/schemas/Motorista"
         "400":
-          description: Dados inválidos
+          description: Dados inválidos (nome ausente ou com menos de 2 caracteres)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+        "409":
+          description: Nome já cadastrado
           content:
             application/json:
               schema:
@@ -249,6 +297,7 @@ paths:
           schema:
             type: string
             format: uuid
+          description: Identificador único do motorista (UUID)
       responses:
         "200":
           description: Motorista encontrado
@@ -256,6 +305,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Motorista"
+        "400":
+          description: ID inválido (não é um UUID válido)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
         "404":
           description: Motorista não encontrado
           content:
@@ -264,6 +319,7 @@ paths:
                 $ref: "#/components/schemas/Erro"
     put:
       summary: Atualizar motorista cadastrado
+      description: Pelo menos um campo deve ser enviado no body
       tags:
         - Motoristas
       parameters:
@@ -273,6 +329,7 @@ paths:
           schema:
             type: string
             format: uuid
+          description: Identificador único do motorista (UUID)
       requestBody:
         required: true
         content:
@@ -287,7 +344,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Motorista"
         "400":
-          description: Dados inválidos
+          description: Dados inválidos (body vazio, nome com menos de 2 caracteres, UUID inválido)
           content:
             application/json:
               schema:
@@ -309,9 +366,16 @@ paths:
           schema:
             type: string
             format: uuid
+          description: Identificador único do motorista (UUID)
       responses:
         "204":
           description: Motorista excluído com sucesso
+        "400":
+          description: ID inválido (não é um UUID válido)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
         "404":
           description: Motorista não encontrado
           content:
@@ -363,7 +427,13 @@ paths:
               schema:
                 $ref: "#/components/schemas/UtilizacaoCompleta"
         "400":
-          description: Dados inválidos
+          description: Dados inválidos (campos obrigatórios ausentes, UUID inválido, motivo com menos de 3 caracteres)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+        "404":
+          description: Automóvel ou motorista não encontrado
           content:
             application/json:
               schema:
@@ -390,6 +460,7 @@ paths:
           schema:
             type: string
             format: uuid
+          description: Identificador único da utilização (UUID)
       requestBody:
         content:
           application/json:
@@ -402,6 +473,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UtilizacaoCompleta"
+        "400":
+          description: ID inválido (não é um UUID válido)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
         "404":
           description: Utilização não encontrada
           content:
@@ -436,6 +513,7 @@ components:
         senha:
           type: string
           format: password
+          minLength: 6
           example: "123456"
 
     LoginOutput:
@@ -459,6 +537,8 @@ components:
         - placa
         - cor
         - marca
+        - criadoEm
+        - atualizadoEm
       properties:
         id:
           type: string
@@ -473,6 +553,14 @@ components:
         marca:
           type: string
           example: "Toyota"
+        criadoEm:
+          type: string
+          format: date-time
+          description: Data de criação do registro
+        atualizadoEm:
+          type: string
+          format: date-time
+          description: Data da última atualização
 
     CriarAutomovelInput:
       type: object
@@ -483,25 +571,32 @@ components:
       properties:
         placa:
           type: string
+          pattern: "^[A-Z]{3}-\\d{4}$"
           example: "ABC-1234"
         cor:
           type: string
+          minLength: 2
           example: "Preto"
         marca:
           type: string
+          minLength: 2
           example: "Toyota"
 
     AtualizarAutomovelInput:
+      description: Pelo menos um campo deve ser informado
       type: object
       properties:
         placa:
           type: string
+          pattern: "^[A-Z]{3}-\\d{4}$"
           example: "XYZ-9876"
         cor:
           type: string
+          minLength: 2
           example: "Branco"
         marca:
           type: string
+          minLength: 2
           example: "Honda"
 
     Motorista:
@@ -509,6 +604,8 @@ components:
       required:
         - id
         - nome
+        - criadoEm
+        - atualizadoEm
       properties:
         id:
           type: string
@@ -517,6 +614,14 @@ components:
         nome:
           type: string
           example: "João Silva"
+        criadoEm:
+          type: string
+          format: date-time
+          description: Data de criação do registro
+        atualizadoEm:
+          type: string
+          format: date-time
+          description: Data da última atualização
 
     CriarMotoristaInput:
       type: object
@@ -525,13 +630,16 @@ components:
       properties:
         nome:
           type: string
+          minLength: 2
           example: "João Silva"
 
     AtualizarMotoristaInput:
+      description: Pelo menos um campo deve ser informado
       type: object
       properties:
         nome:
           type: string
+          minLength: 2
           example: "João Silva Atualizado"
 
     UtilizacaoCompleta:
@@ -605,6 +713,7 @@ components:
           description: ID do motorista que irá utilizar
         motivo:
           type: string
+          minLength: 3
           description: Motivo da utilização
 
     FinalizarUtilizacaoInput:

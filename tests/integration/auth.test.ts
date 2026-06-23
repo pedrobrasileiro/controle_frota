@@ -35,6 +35,14 @@ describe('Autenticacao - POST /api/auth', () => {
     expect(resposta.status).toBe(400)
   })
 
+  it('deve retornar 400 quando senha tiver menos de 6 caracteres', async () => {
+    const resposta = await request(app)
+      .post('/api/auth')
+      .send({ usuario: USUARIO_VALIDO, senha: '12345' })
+
+    expect(resposta.status).toBe(400)
+  })
+
   it('deve retornar 401 ao acessar rota protegida sem token', async () => {
     const resposta = await request(app).get('/api/automoveis')
 
